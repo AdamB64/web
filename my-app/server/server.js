@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import User from '../mongo/users.js'; // Adjust the path as necessary
+import User from '../mongo/users.js';
+import Stories from '../mongo/stories.js'; // Import your Stories model
 import bcryptjs from 'bcryptjs'; // Import bcryptjs for password hashing
 import jwt from 'jsonwebtoken'; // Import jsonwebtoken for token generation
 import dotenv from 'dotenv';
@@ -153,6 +154,138 @@ app.post('/login', async (req, res) => {
 app.post('/get-start', authenticateToken, (req, res) => {
     // Handle the request to get the start page
     res.status(200).json({ message: 'Start page data' });
+}
+);
+
+app.post('/change_password', authenticateToken, async (req, res) => {
+    try {
+        const { Password, oldPassword } = req.body;
+        //console.log("Password received:", Password); // Log the received password for debugging
+        const userId = req.user.id; // Get user ID from the token
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        //console.log("User found:", user); // Log the user object for debugging
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Compare old password with hashed password
+        const isMatch = await bcryptjs.compare(oldPassword, user.password);
+        if (!isMatch) {
+            //console.error("Password mismatch:", Password, user.password);
+            return res.status(401).json({ message: 'Invalid old password' });
+        }
+
+        // Hash new password and update it in the database
+        const hashedNewPassword = await bcryptjs.hash(Password, salt);
+        //console.log("New password hashed:", hashedNewPassword); // Log the hashed new password for debugging
+        user.password = hashedNewPassword;
+        //console.log("User before save:", user); // Log the user object before saving
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/change_auth', authenticateToken, async (req, res) => {
+    try {
+        const { newRole } = req.body;
+        const userId = req.user.id; // Get user ID from the token
+
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update user's role
+        req.user.author_or_reader = newRole; // Update the role in the token
+        const updatesToken = jwt.sign(
+            { id: user._id, email: user.email, username: user.username, anonymous: user.anonymous, author_or_reader: newRole },
+            process.env.JWT_SECRET, // Use your secret key here
+            { expiresIn: '7h' } // Token expiration time
+        )
+        res.clearCookie("user"); // Clear any existing cookie before setting a new one
+        res.cookie("user", updatesToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 60 * 60 * 7000 // 7 hour expiration
+        });
+
+
+        user.author_or_reader = newRole;
+        await user.save();
+
+        res.status(200).json({ message: 'User role updated successfully' });
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/changeAn', authenticateToken, async (req, res) => {
+    try {
+        //console.log("Change anonymity request received:", req.body); // Log the request body for debugging
+        const { anonymous } = req.body;
+        const userId = req.user.id; // Get user ID from the token
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update user's anonymity status
+        req.user.anonymous = anonymous; // Convert checkbox value to boolean
+        const updatesToken = jwt.sign(
+            { id: user._id, email: user.email, username: user.username, anonymous: anonymous, author_or_reader: user.author_or_reader },
+            process.env.JWT_SECRET, // Use your secret key here
+            { expiresIn: '7h' } // Token expiration time
+        )
+        res.clearCookie("user"); // Clear any existing cookie before setting a new one
+
+        res.cookie("user", updatesToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 60 * 60 * 7000 // 7 hour expiration
+        });
+        //console.log("User before save:", req.user); // Log the user object before saving
+        user.anonymous = anonymous; // Convert checkbox value to boolean
+        await user.save();
+
+        res.status(200).json({ message: 'User anonymity status updated successfully' });
+    } catch (error) {
+        console.error('Error updating user anonymity status:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/write', authenticateToken, async (req, res) => {
+    try {
+        const { title, story, genres } = req.body;
+        const userId = req.user.id; // Get user ID from the token
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Save the story to the database (you would need to implement this part)
+        // For example, you can create a new Story model and save it here
+
+        res.status(200).json({ message: 'Story submitted successfully' });
+    } catch (error) {
+        console.error('Error submitting story:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 }
 );
 

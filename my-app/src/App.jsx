@@ -59,6 +59,11 @@ export default function App() {
                 </Link>
               </li>
               <li>
+                <Link to="/signup" style={{ color: 'white', textDecoration: 'none' }}>
+                  Signup
+                </Link>
+              </li>
+              <li>
                 <Link to="/user" style={{ color: 'white', textDecoration: 'none' }}>
                   User
                 </Link>

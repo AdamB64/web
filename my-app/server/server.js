@@ -15,9 +15,11 @@ dotenv.config(); // Load environment variables from .env file
 
 app.use(cors({
     origin: 'http://localhost:5173', // allow your frontend
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'OPTIONS'], // allow these methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // allow these headers
     credentials: true // optional, only needed if you're using cookies/auth
 }));
+
 
 // Built-in middleware to parse urlencoded form data
 app.use(express.urlencoded({ extended: true }));
@@ -26,20 +28,40 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser()); // Middleware to parse cookies
 
+
+// Middleware to protect routes
+function authenticateToken(req, res, next) {
+    //console.log('Authenticating token...');
+    const token = req.cookies.user; // Get token from cookies
+    //console.log(token);
+
+    if (!token) {
+        return res.status(201).json({ message: 'No token. Please log in.' }); // Send error response if no token is found
+    }
+
+    try {
+        // Verify token
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Attach user info to the request object (optional)
+        req.user = user;
+
+        next(); // Proceed to the next middleware or route handler
+    } catch (err) {
+        console.error("Token verification failed:", err.message);
+        res.status(403).json({ message: 'Invalid token' }); // Send error response if token is invalid
+    }
+}
+
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/mydatabase', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect('mongodb://localhost:27017/mydatabase')
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('Failed to connect to MongoDB', err));
 
 // POST route
-app.post('/logged-in', (req, res) => {
+app.post('/logged-in', authenticateToken, (req, res) => {
     const user = req.cookies.user;
-    if (!user) {
-        return res.status(201).json({ message: 'no cookie' });
-    }
+
     // Decode the JWT token to get user information
     const decodedToken = jwt.verify(user, process.env.JWT_SECRET);
 
@@ -48,7 +70,7 @@ app.post('/logged-in', (req, res) => {
 
 app.post('/signup', async (req, res) => {
     try {
-        const { email, username, password, anonymous } = req.body;
+        const { email, username, password, anonymous, a_or_r } = req.body;
 
         const hashedPassword = await bcryptjs.hash(password, salt); // Hash the password
 
@@ -57,17 +79,20 @@ app.post('/signup', async (req, res) => {
             email,
             username,
             password: hashedPassword, // Store the hashed password
-            anonymous: anonymous === 'on' // because checkbox sends 'on' when checked
+            anonymous: anonymous === 'on', // because checkbox sends 'on' when checked
+            author_or_reader: a_or_r // Store the author/reader preference
         });
 
         // Save to DB
         await newUser.save();
 
         const user = jwt.sign(
-            { id: newUser._id, email: newUser.email, username: newUser.username },
+            { id: newUser._id, email: newUser.email, username: newUser.username, anonymous: newUser.anonymous, author_or_reader: newUser.author_or_reader },
             process.env.JWT_SECRET, // Use your secret key here
-            { expiresIn: '1h' } // Token expiration time
+            { expiresIn: '7h' } // Token expiration time
         )
+
+        res.clearCookie("user"); // Clear any existing cookie before setting a new one
 
         res.cookie("user", user, {
             httpOnly: true, // Prevents JavaScript access
@@ -103,10 +128,12 @@ app.post('/login', async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user._id, email: user.email, username: user.username },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
+            { id: user._id, email: user.email, username: user.username, anonymous: user.anonymous, author_or_reader: user.author_or_reader },
+            process.env.JWT_SECRET, // Use your secret key here
+            { expiresIn: '7h' } // Token expiration time
+        )
+
+        res.clearCookie("user"); // Clear any existing cookie before setting a new one
 
         res.cookie("user", token, {
             httpOnly: true,
@@ -123,7 +150,7 @@ app.post('/login', async (req, res) => {
 });
 
 
-app.post('/get-start', (req, res) => {
+app.post('/get-start', authenticateToken, (req, res) => {
     // Handle the request to get the start page
     res.status(200).json({ message: 'Start page data' });
 }

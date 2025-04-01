@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 export default function User() {
     const userRef = useRef(null);
-    const userInfo = useRef(null);
     const userDiv = useRef(null);
 
     useEffect(() => {
@@ -14,45 +15,14 @@ export default function User() {
         })
             .then(response => {
                 if (response.status === 201) {
-                    if (userRef.current) {
-                        userRef.current.textContent = "No User Logged in"; // ✅ update the h2 text
-                        userRef.current.style.color = "red"; // ✅ example: change text color
-                        if (userInfo.current) {
-                            userInfo.current.textContent = "Guest User"; // ✅ update the p text
-                            userInfo.current.style.color = "red"; // ✅ example: change text color
-                        }
-                        if (userDiv.current) {
-                            // Create Login button
-                            const loginBtn = document.createElement("button");
-                            loginBtn.textContent = "Login";
-                            loginBtn.onclick = () => { UserLog() }; // Call UserLog function on click
-
-                            // Line break
-                            const br = document.createElement("br");
-
-                            // Create Sign Up button
-                            const signupBtn = document.createElement("button");
-                            signupBtn.textContent = "Sign Up";
-                            signupBtn.onclick = () => {
-                                window.location.href = "http://localhost:5173/signup";
-                            };
-
-                            // Append them to the div
-                            userDiv.current.appendChild(loginBtn);
-                            userDiv.current.appendChild(br);
-                            userDiv.current.appendChild(signupBtn);
-                        }
-                    }
-                    return;
+                    toast.error("User is not logged in \n being redirected to login page"); // User is not logged in
+                    setTimeout(() => {
+                        window.location.href = "http://localhost:5173/login";
+                    }, 2500); // 2 seconds delay
                 } else if (response.status === 200) {
                     const user = response.data.decodedToken; // ✅ get the username from the token
-                    if (userRef.current) {
-                        userRef.current.textContent = "user " + user.username + " is logged in"; // ✅ update the h2 text
-                        userRef.current.style.color = "green"; // ✅ example: change text color
-                        if (userInfo.current) {
+                    toast.success("user " + user.username + " is logged in");
 
-                        }
-                    }
                 }
             })
             .catch(error => {
@@ -67,9 +37,20 @@ export default function User() {
     return (
         <div>
             <h2 ref={userRef}></h2>
-            <p ref={userInfo}></p>
             <div ref={userDiv}>
             </div>
+            {/* This must be included once in your component tree */}
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }

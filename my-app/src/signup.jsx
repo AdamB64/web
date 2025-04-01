@@ -14,6 +14,14 @@ export default function Signup() {
                 <label htmlFor="password">Password:</label><br />
                 <input type="password" id="password" name="password" required /><br /><br />
 
+                <label htmlFor="a_or_r">Are you an author or a reader or both?</label>
+                <p>you can change this later in users page</p>
+                <select id="a_or_r" name="a_or_r" required>
+                    <option value="author">Author</option>
+                    <option value="reader">Reader</option>
+                    <option value="both">Both</option>
+                </select><br /><br />
+
                 <input type="checkbox" id="anonymous" name="anonymous" />
                 <label htmlFor="anonymous">Do you wish to be anonymous?</label><br /><br />
 

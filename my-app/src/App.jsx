@@ -1,11 +1,15 @@
 import { Routes, Route, Link } from 'react-router-dom'
-import About from './about.jsx'
+import User from './user.jsx'
+import Start from './start.jsx'
+import Signup from './signup.jsx'
+import Login from './login.jsx'
 
 function Home() {
   return (
     <div>
-      <h2>Home Page</h2>
-      <p>Welcome to the homepage!</p>
+      <h2>This is my libary where anyone can make a story</h2>
+      <h3>go to the start page and find all the stries made by other people on this website</h3>
+      <p>or sign-up/login to an account and create your own stories, where you can publish them anonymosly or with your account credited fro the story</p>
     </div>
   )
 }
@@ -54,8 +58,13 @@ export default function App() {
                 </Link>
               </li>
               <li>
-                <Link to="/about" style={{ color: 'white', textDecoration: 'none' }}>
-                  About
+                <Link to="/user" style={{ color: 'white', textDecoration: 'none' }}>
+                  User
+                </Link>
+              </li>
+              <li>
+                <Link to="/start" style={{ color: 'white', textDecoration: 'none' }}>
+                  Start
                 </Link>
               </li>
             </ul>
@@ -66,7 +75,10 @@ export default function App() {
       <main style={{ padding: '100px 20px 30px', maxWidth: '1200px', margin: '0 auto' }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/User" element={<User />} />
+          <Route path="/start" element={<Start />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </main>
     </div>

@@ -45,12 +45,15 @@ export default function User() {
                     }
                     return;
                 } else if (response.status === 200) {
+                    const user = response.data.decodedToken; // ✅ get the username from the token
                     if (userRef.current) {
-                        userRef.current.textContent = "User Logged in"; // ✅ update the h2 text
+                        userRef.current.textContent = "user " + user.username + " is logged in"; // ✅ update the h2 text
                         userRef.current.style.color = "green"; // ✅ example: change text color
+                        if (userInfo.current) {
+
+                        }
                     }
                 }
-                console.log("Success:", response.data);
             })
             .catch(error => {
                 console.error("Error:", error);

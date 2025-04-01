@@ -3,6 +3,7 @@ import User from './user.jsx'
 import Start from './start.jsx'
 import Signup from './signup.jsx'
 import Login from './login.jsx'
+import Write from './write.jsx'
 
 function Home() {
   return (
@@ -63,6 +64,11 @@ export default function App() {
                 </Link>
               </li>
               <li>
+                <Link to="/write" style={{ color: 'white', textDecoration: 'none' }}>
+                  Write
+                </Link>
+              </li>
+              <li>
                 <Link to="/start" style={{ color: 'white', textDecoration: 'none' }}>
                   Start
                 </Link>
@@ -79,6 +85,7 @@ export default function App() {
           <Route path="/start" element={<Start />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/write" element={<Write />} />
         </Routes>
       </main>
     </div>

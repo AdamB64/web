@@ -3,7 +3,7 @@ export default function Login() {
         <div>
             <h2>Login</h2>
             <form action="http://localhost:8080/login" method="post">
-                <label htmlFor="username">Username:</label><br />
+                <label htmlFor="username">Username or email:</label><br />
                 <input type="text" id="username" name="username" required /><br />
 
                 <label htmlFor="password">Password:</label><br />

@@ -50,7 +50,16 @@ function StoryPage() {
 
             <h3 style={{ marginTop: '2rem', color: 'white' }}>Reviews:</h3>
             {Array.isArray(story.Reviews) && story.Reviews.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1.5rem',
+                        maxHeight: '700px', // Approx. height for 5 reviews
+                        overflowY: story.Reviews.length > 4 ? 'auto' : 'visible',
+                        paddingRight: '0.5rem',
+                    }}
+                >
                     {story.Reviews.map((review, i) => (
                         <div
                             key={i}
@@ -76,6 +85,7 @@ function StoryPage() {
             ) : (
                 <p style={{ color: '#aaa' }}>No reviews yet.</p>
             )}
+
             <div style={{ alignItems: 'center', textAlign: 'center', color: 'white' }}>
                 <h3 style={{ marginTop: '3rem', color: 'white' }}>Leave a Review</h3>
                 <form

@@ -60,13 +60,15 @@ mongoose.connect('mongodb://localhost:27017/mydatabase')
     .catch(err => console.error('Failed to connect to MongoDB', err));
 
 // POST route
-app.post('/logged-in', authenticateToken, (req, res) => {
+app.post('/logged-in', authenticateToken, async (req, res) => {
     const user = req.cookies.user;
+
+    const stories = await Stories.find({ AuthorID: req.user.id }).sort({ createdAt: -1 });
 
     // Decode the JWT token to get user information
     const decodedToken = jwt.verify(user, process.env.JWT_SECRET);
 
-    res.status(200).json({ message: 'Cookie received', decodedToken });
+    res.status(200).json({ message: 'Cookie received', decodedToken, stories });
 });
 
 app.post('/home', async (req, res) => {

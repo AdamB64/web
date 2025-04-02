@@ -38,23 +38,46 @@ function Home() {
           <p><strong>Content:</strong></p>
           <p>{story.content}</p>
           {story && (
-            <div>
-              <strong>Reviews:</strong>
+            <div style={{ marginTop: '2rem' }}>
+              <h3 style={{ color: 'white' }}>Reviews:</h3>
               {Array.isArray(story.Reviews) && story.Reviews.length > 0 ? (
-                <ul>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1.5rem',
+                    maxHeight: '300px', // around 2 reviews tall
+                    overflowY: 'auto',
+                    paddingRight: '0.5rem',
+                  }}
+                >
                   {story.Reviews.map((review, index) => (
-                    <li key={index} style={{ marginBottom: '1rem' }}>
-                      <p><strong>User ID:</strong> {review.UserID}</p>
-                      <p><strong>Stars:</strong> {review.Stars}</p>
-                      <p>{review.ReviewText}</p>
-                    </li>
+                    <div
+                      key={index}
+                      style={{
+                        backgroundColor: '#1e1e1e',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        border: '1px solid #444',
+                        color: 'white',
+                      }}
+                    >
+                      <p style={{ marginBottom: '0.5rem' }}>
+                        <strong>User ID:</strong> {review.UserID}
+                      </p>
+                      <p style={{ marginBottom: '0.5rem' }}>
+                        <strong>Stars:</strong> {'⭐'.repeat(review.Stars)}
+                      </p>
+                      <p style={{ fontStyle: 'italic' }}>{review.ReviewText}</p>
+                    </div>
                   ))}
-                </ul>
+                </div>
               ) : (
-                <p>No reviews yet.</p>
+                <p style={{ color: '#aaa' }}>No reviews yet.</p>
               )}
             </div>
           )}
+
 
         </div>
       )}

@@ -7,6 +7,7 @@ export default function User() {
     const userRef = useRef(null);
     const userDiv = useRef(null);
     const [user, setUser] = useState(null);
+    const [stories, setStories] = useState([]);
     const [newRole, setNewRole] = useState("");
 
     useEffect(() => {
@@ -31,6 +32,9 @@ export default function User() {
                         anonymous: userData.anonymous,
                         author_or_reader: userData.author_or_reader
                     });
+
+                    console.log("User stories:", response.data.stories); // Log the stories for debugging
+                    setStories(response.data.stories);
                     setNewRole(userData.author_or_reader); // set default selected role
                     toast.success("User " + userData.username + " is logged in");
                     if (userRef.current) {
@@ -188,6 +192,21 @@ export default function User() {
                     </div>
                 )}
             </div>
+            {stories.length > 0 && (
+                <div style={{ marginTop: "2rem", backgroundColor: "#000000", padding: "1rem", borderRadius: "8px", textAlign: "center" }}>
+                    <h3 style={{ color: "#2c3e50" }}>Your Stories</h3>
+                    {stories.map((story, index) => (
+                        <li key={index} style={{ marginBottom: "1rem" }}>
+                            <strong>Title:</strong><a href={`/story/${story._id}`}> {story.title}</a><br />
+                            <strong>Genre(s):</strong> {Array.isArray(story.genres) ? story.genres.join(', ') : 'N/A'} < br />
+                            <strong>Content:</strong><br />
+                            {story.content}
+                        </li>
+                    ))}
+                </div>
+            )
+            }
+
 
             <ToastContainer
                 position="top-right"
@@ -200,6 +219,6 @@ export default function User() {
                 pauseOnHover
                 theme="colored"
             />
-        </div>
+        </div >
     );
 }

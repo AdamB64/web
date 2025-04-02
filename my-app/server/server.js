@@ -159,9 +159,11 @@ app.post('/login', async (req, res) => {
 });
 
 
-app.post('/get-start', authenticateToken, (req, res) => {
+app.post('/get-start', async (req, res) => {
     // Handle the request to get the start page
-    res.status(200).json({ message: 'Start page data' });
+    const stories = await Stories.find({ Private: { $ne: true } }).sort({ Stars: -1 });
+    //console.log(stories);
+    res.status(200).json({ message: 'Start page data', stories });
 }
 );
 

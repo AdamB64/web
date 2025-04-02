@@ -7,6 +7,7 @@ import Login from './login.jsx'
 import Write from './write.jsx'
 import StoryPage from './StoryPage.jsx'
 import Claim from './claim.jsx'
+import Auth from './auth.jsx'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
@@ -144,6 +145,11 @@ export default function App() {
                 </Link>
               </li>
               <li>
+                <Link to="/login" style={{ color: 'white', textDecoration: 'none' }}>
+                  Login
+                </Link>
+              </li>
+              <li>
                 <Link to="/user" style={{ color: 'white', textDecoration: 'none' }}>
                   User
                 </Link>
@@ -160,7 +166,12 @@ export default function App() {
               </li>
               <li>
                 <Link to="/start" style={{ color: 'white', textDecoration: 'none' }}>
-                  Start
+                  Story Rankings
+                </Link>
+              </li>
+              <li>
+                <Link to='/auth' style={{ color: 'white', textDecoration: 'none' }}>
+                  Author Ranking
                 </Link>
               </li>
             </ul>
@@ -178,6 +189,8 @@ export default function App() {
           <Route path="/write" element={<Write />} />
           <Route path="/story/:id" element={<StoryPage />} />
           <Route path="/claim" element={<Claim />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </main>
     </div>

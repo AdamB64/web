@@ -20,7 +20,7 @@ export default function Start() {
             <h2>Author</h2>
             {star ? (
                 <div>
-                    <p><strong>Username:</strong> {star.username}</p>
+                    <p><strong>Username:</strong> {star.user.username}</p>
                     <p><strong>Average Stars:</strong> {star.averageStars}</p>
                 </div>
             ) : (

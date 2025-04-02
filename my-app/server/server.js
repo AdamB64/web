@@ -435,6 +435,62 @@ app.post('/logout', (req, res) => {
 });
 
 
+app.post('/claim', async (req, res) => {
+    try {
+        const { id } = req.body; // Get story ID from request body
+
+        // Find the story by ID
+        const story = await Stories.findById(id);
+        if (!story) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+        if (!story.AuthorID && story.Author === "Guest") {
+            // Return the story data as JSON
+            return res.status(200).json(story);
+
+        }
+        const Token = req.cookies.user; // Get token from cookies
+        const user = jwt.verify(Token, process.env.JWT_SECRET); // Verify token
+        if (story.AuthorID !== user.id) {
+            return res.status(403).json({ message: 'You are not authorized to claim this story' });
+        }
+
+        // Return the story data as JSON
+        res.status(200).json(story);
+    } catch (error) {
+        console.error('Error fetching story:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+app.post('/update/:id', async (req, res) => {
+    const { id } = req.params; // Get the story ID from the URL parameters
+    const { title, story, genres } = req.body; // Get the updated story data from the request body
+
+    try {
+        // Find the story by ID
+        const existingStory = await Stories.findById(id);
+        if (!existingStory) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+
+        // Update the story fields
+        existingStory.title = title;
+        existingStory.content = story;
+        existingStory.genres = genres;
+
+        // Save the updated story to the database
+        await existingStory.save();
+
+        res.status(200).json({ message: 'Story updated successfully', story: existingStory });
+    } catch (error) {
+        console.error('Error updating story:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+);
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

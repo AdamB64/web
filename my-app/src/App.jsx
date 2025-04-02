@@ -1,3 +1,4 @@
+import './App.css'
 import { Routes, Route, Link } from 'react-router-dom'
 import User from './user.jsx'
 import Start from './start.jsx'
@@ -5,6 +6,7 @@ import Signup from './signup.jsx'
 import Login from './login.jsx'
 import Write from './write.jsx'
 import StoryPage from './StoryPage.jsx'
+import Claim from './claim.jsx'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
@@ -138,7 +140,7 @@ export default function App() {
               </li>
               <li>
                 <Link to="/signup" style={{ color: 'white', textDecoration: 'none' }}>
-                  Signup
+                  Sign up
                 </Link>
               </li>
               <li>
@@ -149,6 +151,11 @@ export default function App() {
               <li>
                 <Link to="/write" style={{ color: 'white', textDecoration: 'none' }}>
                   Write
+                </Link>
+              </li>
+              <li>
+                <Link to="/claim" style={{ color: 'white', textDecoration: 'none' }}>
+                  Claim/Edit
                 </Link>
               </li>
               <li>
@@ -169,7 +176,8 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/write" element={<Write />} />
-          <Route path="/story/:id" element={<StoryPage />} /> {/* ✅ Add this line */}
+          <Route path="/story/:id" element={<StoryPage />} />
+          <Route path="/claim" element={<Claim />} />
         </Routes>
       </main>
     </div>

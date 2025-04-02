@@ -164,6 +164,52 @@ export default function User() {
             });
     }
 
+    function Delete(storyId) {
+        const confirmDelete = window.confirm("Are you sure you want to delete this story? This action cannot be undone.");
+        if (!confirmDelete) return;
+
+        axios.post("http://localhost:8080/delete", {
+            storyId: storyId
+        }, {
+            withCredentials: true,
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    toast.success("Story deleted successfully!");
+                    setStories(prev => prev.filter(story => story._id !== storyId));
+                } else {
+                    toast.error("Failed to delete story.");
+                }
+            })
+            .catch(error => {
+                console.error("Error deleting story:", error);
+                toast.error("An error occurred while deleting the story.");
+            });
+    }
+
+    function logout() {
+        const confirmLogout = window.confirm("Are you sure you want to log out?");
+        if (!confirmLogout) return;
+
+        axios.post("http://localhost:8080/logout", {}, {
+            withCredentials: true,
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    toast.success("Logged out successfully!");
+                    setTimeout(() => {
+                        window.location.href = "http://localhost:5173/login";
+                    }, 2500);
+                } else {
+                    toast.error("Failed to log out.");
+                }
+            })
+            .catch(error => {
+                console.error("Error logging out:", error);
+                toast.error("An error occurred while logging out.");
+            });
+    }
+
     return (
         <div>
             <h2 ref={userRef} style={{
@@ -210,7 +256,9 @@ export default function User() {
                             <label htmlFor="password"><strong>Change Password:</strong></label>
                             <button onClick={changePassword} style={{ marginLeft: "1rem", padding: "0.25rem 0.75rem", cursor: "pointer" }}>
                                 Change Password
-                            </button>
+                            </button><br></br>
+                            <br></br>
+                            <button onClick={logout}>Logout</button>
                         </div>
                     </div>
                 )}
@@ -224,6 +272,9 @@ export default function User() {
                             <a href={`/story/${story._id}`}> {story.title}</a>
                             <button onClick={() => ChangeVis(story._id)} style={{ marginLeft: "1rem" }}>
                                 Change Visibility
+                            </button>
+                            <button onClick={() => Delete(story._id)} style={{ marginLeft: "1rem", color: "red" }}>
+                                delete
                             </button>
                             <br />
 

@@ -280,8 +280,9 @@ app.post('/write', async (req, res) => {
     try {
         let newStory;
         const { title, story, genres } = req.body;
-        if (!req.user) {
-            console.log("User ID not found in token. Setting to anonymous."); // Log the user ID for debugging
+        //console.log(req.cookies.user); // Log the user object for debugging
+        if (!req.cookies.user) {
+            //console.log("User ID not found in token. Setting to anonymous."); // Log the user ID for debugging
             newStory = new Stories({
                 title,
                 content: story,
@@ -290,7 +291,10 @@ app.post('/write', async (req, res) => {
             });
             //console.log("New story object:", newStory); // Log the new story object for debugging
             await newStory.save(); // Save the new story to the database
+            res.status(201).json({ message: 'Story submitted successfully', StoryID: newStory._id });
+
         } else {
+            authenticateToken(req, res, async () => { }); // Call the authenticateToken middleware to verify the token
             let userId = req.user.id; // Get user ID from the token
 
             // Find user by ID
@@ -320,11 +324,8 @@ app.post('/write', async (req, res) => {
             }
             //console.log("New story object:", newStory); // Log the new story object for debugging
             await newStory.save(); // Save the new story to the database
-            // Save the story to the database (you would need to implement this part)
-            // For example, you can create a new Story model and save it here
+            res.status(200).json({ message: 'Story submitted successfully' });
         }
-
-        res.status(200).json({ message: 'Story submitted successfully' });
     } catch (error) {
         console.error('Error submitting story:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -406,6 +407,31 @@ app.post('/changeVis', authenticateToken, async (req, res) => {
         console.error('Error updating story visibility:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
+});
+
+app.post('/delete', authenticateToken, async (req, res) => {
+    try {
+        const { storyId } = req.body; // Get story ID from request body
+
+        // Find the story by ID
+        const story = await Stories.findById(storyId);
+        if (!story) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+
+        // Delete the story from the database
+        await Stories.deleteOne({ _id: storyId });
+
+        res.status(200).json({ message: 'Story deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting story:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/logout', (req, res) => {
+    res.clearCookie("user"); // Clear the cookie to log out the user
+    res.status(200).json({ message: 'Logged out successfully' });
 });
 
 

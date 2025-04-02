@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export default function Write() {
     const genresList = [
@@ -49,11 +50,25 @@ export default function Write() {
             withCredentials: true,
         })
             .then(response => {
-                console.log('Response:', response.data);
-                alert('Story submitted successfully!');
+                //console.log('Response:', response.data);
+                toast.success('Story submitted successfully!');
                 setTitle('');
                 setStory('');
                 setSelectedGenres([]);
+                if (response.status === 201) {
+                    const storyId = response.data.StoryID;
+
+                    // Copy the ID to clipboard
+                    navigator.clipboard.writeText(storyId)
+                        .then(() => {
+                            alert(`Story created with ID: ${storyId}\nThe ID has been copied to your clipboard.\nUse this ID to claim your story.`);
+                        })
+                        .catch(err => {
+                            // If clipboard fails, just show the alert
+                            alert(`Story created with ID: ${storyId}\nUse this ID to claim your story (copy it manually).`);
+                            console.error('Could not copy story ID to clipboard:', err);
+                        });
+                }
             })
             .catch(error => {
                 console.error('Error submitting form:', error);

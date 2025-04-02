@@ -72,7 +72,8 @@ app.post('/logged-in', authenticateToken, async (req, res) => {
 });
 
 app.post('/home', async (req, res) => {
-    const newestStory = await Stories.findOne({}).sort({ createdAt: -1 });
+    const newestStory = await Stories.findOne({ Private: { $ne: true } }).sort({ createdAt: -1 });
+
     return res.status(200).json({ message: 'Home page data', newestStory });
 });
 
@@ -274,22 +275,23 @@ app.post('/changeAn', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/write', authenticateToken, async (req, res) => {
+app.post('/write', async (req, res) => {
     //console.log("Write request received:", req.body); // Log the request body for debugging
     try {
         let newStory;
         const { title, story, genres } = req.body;
-        let userId = req.user.id; // Get user ID from the token
-        if (!userId) {
+        if (!req.user) {
+            console.log("User ID not found in token. Setting to anonymous."); // Log the user ID for debugging
             newStory = new Stories({
                 title,
                 content: story,
                 genres,
-                Anomymous: true, // Set anonymity to true
+                Author: "Guest" // Set author to "Guest"
             });
             //console.log("New story object:", newStory); // Log the new story object for debugging
             await newStory.save(); // Save the new story to the database
         } else {
+            let userId = req.user.id; // Get user ID from the token
 
             // Find user by ID
             const auth = await User.findById(userId);
@@ -382,6 +384,27 @@ app.post('/story/:id/review', authenticateToken, async (req, res) => {
         res.status(200).json({ message: "Review added", story });
     } catch (err) {
         res.status(500).json({ message: "Error adding review", error: err.message });
+    }
+});
+
+app.post('/changeVis', authenticateToken, async (req, res) => {
+    try {
+        const { storyId } = req.body; // Get story ID and visibility from request body
+
+        // Find the story by ID
+        const story = await Stories.findById(storyId);
+        if (!story) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+
+        // Update the visibility of the story
+        story.Private = !story.Private; // Toggle visibility (true/false)
+        await story.save(); // Save the updated story to the database
+
+        res.status(200).json({ message: 'Story visibility updated successfully' });
+    } catch (error) {
+        console.error('Error updating story visibility:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 

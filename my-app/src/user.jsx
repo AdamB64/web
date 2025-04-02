@@ -141,6 +141,29 @@ export default function User() {
             });
     }
 
+    function ChangeVis(storyId) {
+        const confirmChange = window.confirm("Are you sure you want to change the visibility of this story?");
+        if (!confirmChange) return;
+
+        axios.post("http://localhost:8080/changeVis", {
+            storyId: storyId
+        }, {
+            withCredentials: true,
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    toast.success("Visibility updated successfully!");
+                    setStories(prev => prev.map(story => story._id === storyId ? { ...story, Private: !story.Private } : story));
+                } else {
+                    toast.error("Failed to update visibility.");
+                }
+            })
+            .catch(error => {
+                console.error("Error updating visibility:", error);
+                toast.error("An error occurred while updating visibility.");
+            });
+    }
+
     return (
         <div>
             <h2 ref={userRef} style={{
@@ -197,7 +220,13 @@ export default function User() {
                     <h3 style={{ color: "#2c3e50" }}>Your Stories</h3>
                     {stories.map((story, index) => (
                         <li key={index} style={{ marginBottom: "1rem" }}>
-                            <strong>Title:</strong><a href={`/story/${story._id}`}> {story.title}</a><br />
+                            <strong>Title:</strong>
+                            <a href={`/story/${story._id}`}> {story.title}</a>
+                            <button onClick={() => ChangeVis(story._id)} style={{ marginLeft: "1rem" }}>
+                                Change Visibility
+                            </button>
+                            <br />
+
                             <strong>Genre(s):</strong> {Array.isArray(story.genres) ? story.genres.join(', ') : 'N/A'} < br />
                             <strong>Content:</strong><br />
                             {story.content}

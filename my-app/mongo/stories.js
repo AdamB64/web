@@ -17,6 +17,7 @@ const storiesSchema = new mongoose.Schema({
     ],
     Anomymous: { type: Boolean, default: false },
     Author: { type: String },
+    Private: { type: Boolean, default: false },
 },
     { timestamps: true } // Automatically add createdAt and updatedAt fields
 );

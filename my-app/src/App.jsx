@@ -26,14 +26,22 @@ function Home() {
       <h2>This is my library where anyone can make a story</h2>
       <h3>Go to the start page and find all the stories made by other people on this website</h3>
       <p>Or sign-up/login to an account and create your own stories, where you can publish them anonymously or with your account credited for the story</p>
-
+      <h2>Newest Story</h2>
+      {!story && <p>No new Stories</p>}
       {story && (
         <div style={{ border: '1px solid #ccc', padding: '1rem', marginTop: '2rem' }}>
           <h3><a href={`/story/${story._id}`}>{story.title}</a></h3>
-          <p><strong>Author ID:</strong> {story.Anomymous ? 'anonymous' : story.AuthorID}</p>
-          {!story.Anomymous && (
-            <p><strong>Username:</strong> {story.username}</p>
+          {story.Author === "Guest" ? (
+            <p><strong>User:</strong> {story.Author}</p>
+          ) : (
+            <>
+              <p><strong>Author ID:</strong> {story.Anonymous ? 'anonymous' : story.AuthorID}</p>
+              {!story.Anonymous && (
+                <p><strong>Username:</strong> {story.Author}</p>
+              )}
+            </>
           )}
+          <p><strong>Average Starts: </strong>{story.Stars}</p>
           <p><strong>Genres:</strong> {story.genres.join(', ')}</p>
           <p><strong>Content:</strong></p>
           <p>{story.content}</p>

@@ -508,7 +508,7 @@ app.post('/auth', authenticateToken, async (req, res) => {
     }
 
     averageStars = averageStars / UserStories.length;
-    console.log(averageStars);
+    //console.log(averageStars);
 
     // Return the user information as JSON
     res.status(200).json({ user, averageStars });

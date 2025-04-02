@@ -69,6 +69,11 @@ app.post('/logged-in', authenticateToken, (req, res) => {
     res.status(200).json({ message: 'Cookie received', decodedToken });
 });
 
+app.post('/home', async (req, res) => {
+    const newestStory = await Stories.findOne({}).sort({ createdAt: -1 });
+    return res.status(200).json({ message: 'Home page data', newestStory });
+});
+
 app.post('/signup', async (req, res) => {
     try {
         const { email, username, password, anonymous, a_or_r } = req.body;
@@ -268,18 +273,52 @@ app.post('/changeAn', authenticateToken, async (req, res) => {
 });
 
 app.post('/write', authenticateToken, async (req, res) => {
+    //console.log("Write request received:", req.body); // Log the request body for debugging
     try {
+        let newStory;
         const { title, story, genres } = req.body;
-        const userId = req.user.id; // Get user ID from the token
+        let userId = req.user.id; // Get user ID from the token
+        if (!userId) {
+            newStory = new Stories({
+                title,
+                content: story,
+                genres,
+                Anomymous: true, // Set anonymity to true
+            });
+            //console.log("New story object:", newStory); // Log the new story object for debugging
+            await newStory.save(); // Save the new story to the database
+        } else {
 
-        // Find user by ID
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            // Find user by ID
+            const auth = await User.findById(userId);
+            if (!auth) {
+                res.status(404).json({ message: 'User not found' });
+            }
+
+            if (auth.anonymous === true) {
+                //userId = "anonymous"
+                newStory = new Stories({
+                    title,
+                    content: story,
+                    genres,
+                    AuthorID: userId, // Use the user ID from the token
+                    Anomymous: true, // Set anonymity to true
+                });
+            } else {
+                newStory = new Stories({
+                    title,
+                    content: story,
+                    genres,
+                    AuthorID: userId, // Use the user ID from the token
+                    Anomymous: false, // Set anonymity to false
+                    Author: auth.username // Use the username from the token
+                });
+            }
+            //console.log("New story object:", newStory); // Log the new story object for debugging
+            await newStory.save(); // Save the new story to the database
+            // Save the story to the database (you would need to implement this part)
+            // For example, you can create a new Story model and save it here
         }
-
-        // Save the story to the database (you would need to implement this part)
-        // For example, you can create a new Story model and save it here
 
         res.status(200).json({ message: 'Story submitted successfully' });
     } catch (error) {
@@ -288,6 +327,62 @@ app.post('/write', authenticateToken, async (req, res) => {
     }
 }
 );
+
+app.get('/story/:id', async (req, res) => {
+    const { id } = req.params; // Get the story ID from the URL parameters
+
+    try {
+        // Find the story by ID
+        const story = await Stories.findById(id);
+
+        if (!story) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+
+        // Return the story data as JSON
+        res.status(200).json(story);
+    } catch (error) {
+        console.error('Error fetching story:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/story/:id/review', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const { Stars, ReviewText } = req.body;
+    //console.log(req.user.id); // Log the user object for debugging
+    if (!req.user) {
+        return res.status(401).json({ message: 'user must be logged in' });
+    }
+    const User = req.user ? req.user.username : "anonymous"; // Use the username from the token
+
+    if (Stars < 0 || Stars > 5) {
+        return res.status(400).json({ message: "Stars must be between 0 and 5" });
+    }
+
+    try {
+        const story = await Stories.findById(id);
+        if (!story) return res.status(404).json({ message: "Story not found" });
+
+        story.Reviews.push({
+            User,
+            Stars,
+            ReviewText,
+        });
+
+        // Optional: update average Stars rating
+        const allStars = story.Reviews.map(r => r.Stars);
+        const avgStars = allStars.reduce((a, b) => a + b, 0) / allStars.length;
+        story.Stars = Math.round(avgStars * 10) / 10;
+
+        await story.save();
+
+        res.status(200).json({ message: "Review added", story });
+    } catch (err) {
+        res.status(500).json({ message: "Error adding review", error: err.message });
+    }
+});
+
 
 // Start the server
 app.listen(PORT, () => {

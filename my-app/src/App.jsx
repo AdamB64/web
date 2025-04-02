@@ -4,13 +4,60 @@ import Start from './start.jsx'
 import Signup from './signup.jsx'
 import Login from './login.jsx'
 import Write from './write.jsx'
+import StoryPage from './StoryPage.jsx'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 function Home() {
+  const [story, setStory] = useState(null)
+
+  useEffect(() => {
+    axios.post('http://localhost:8080/home', {})
+      .then(response => {
+        setStory(response.data.newestStory)
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      })
+  }, [])
+
   return (
     <div>
-      <h2>This is my libary where anyone can make a story</h2>
-      <h3>go to the start page and find all the stries made by other people on this website</h3>
-      <p>or sign-up/login to an account and create your own stories, where you can publish them anonymosly or with your account credited fro the story</p>
+      <h2>This is my library where anyone can make a story</h2>
+      <h3>Go to the start page and find all the stories made by other people on this website</h3>
+      <p>Or sign-up/login to an account and create your own stories, where you can publish them anonymously or with your account credited for the story</p>
+
+      {story && (
+        <div style={{ border: '1px solid #ccc', padding: '1rem', marginTop: '2rem' }}>
+          <h3><a href={`/story/${story._id}`}>{story.title}</a></h3>
+          <p><strong>Author ID:</strong> {story.Anomymous ? 'anonymous' : story.AuthorID}</p>
+          {!story.Anomymous && (
+            <p><strong>Username:</strong> {story.username}</p>
+          )}
+          <p><strong>Genres:</strong> {story.genres.join(', ')}</p>
+          <p><strong>Content:</strong></p>
+          <p>{story.content}</p>
+          {story && (
+            <div>
+              <strong>Reviews:</strong>
+              {Array.isArray(story.Reviews) && story.Reviews.length > 0 ? (
+                <ul>
+                  {story.Reviews.map((review, index) => (
+                    <li key={index} style={{ marginBottom: '1rem' }}>
+                      <p><strong>User ID:</strong> {review.UserID}</p>
+                      <p><strong>Stars:</strong> {review.Stars}</p>
+                      <p>{review.ReviewText}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No reviews yet.</p>
+              )}
+            </div>
+          )}
+
+        </div>
+      )}
     </div>
   )
 }
@@ -91,6 +138,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/write" element={<Write />} />
+          <Route path="/story/:id" element={<StoryPage />} /> {/* ✅ Add this line */}
         </Routes>
       </main>
     </div>

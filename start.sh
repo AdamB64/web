@@ -24,13 +24,6 @@ sudo apt update
 # Install MongoDB
 sudo apt install -y mongodb-org
 
-# Enable and start the MongoDB service
-sudo systemctl enable mongod
-sudo systemctl start mongod
-
-# Check status
-sudo systemctl status mongod
-
 # Install Git
 sudo apt install -y git
 

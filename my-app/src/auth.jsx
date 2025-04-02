@@ -1,18 +1,31 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function Start() {
+    const [star, setStar] = useState(null);
+
     useEffect(() => {
-        axios.post("http://localhost:8080/auth").then(response => {
-            console.log("Start page data:", response.data); // Handle the response data as needed
-        }).catch(error => {
-            console.error("Error fetching start page data:", error); // Handle any errors
-        });
-    }); // Empty dependency array means this effect runs once on mount
+        axios.post("http://localhost:8080/auth", {}, { withCredentials: true })
+            .then(response => {
+                console.log("Auth response:", response);
+                setStar(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching auth data:", error);
+            });
+    }, []); // Run only once on mount
 
     return (
         <div>
             <h2>Author</h2>
+            {star ? (
+                <div>
+                    <p><strong>Username:</strong> {star.username}</p>
+                    <p><strong>Average Stars:</strong> {star.averageStars}</p>
+                </div>
+            ) : (
+                <p>Loading author info...</p>
+            )}
         </div>
-    )
+    );
 }

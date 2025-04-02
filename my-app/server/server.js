@@ -493,6 +493,27 @@ app.post('/update/:id', async (req, res) => {
 }
 );
 
+app.post('/auth', authenticateToken, async (req, res) => {
+    const user = req.user; // Get user information from the token
+
+    if (!user) {
+        return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    const UserStories = await Stories.find({ AuthorID: user.id }).sort({ createdAt: -1 });
+    let averageStars = 0;
+    for (let i = 0; i < UserStories.length; i++) {
+        //console.log(UserStories[i].Stars);
+        averageStars += UserStories[i].Stars;
+    }
+
+    averageStars = averageStars / UserStories.length;
+    console.log(averageStars);
+
+    // Return the user information as JSON
+    res.status(200).json({ user, averageStars });
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

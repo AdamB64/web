@@ -36,9 +36,9 @@ sudo apt install -y git
 
 git clone https://github.com/RobertGordonUniversity/cm4025-coursework-AdamB64.git
 
-npm ci
-
 cd cm4025-coursework-AdamB64/my-app
+
+npm ci
 
 npm run dev:all
 

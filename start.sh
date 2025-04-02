@@ -4,19 +4,19 @@
 sudo apt update
 
 # Install curl
-sudo apt install -y curl
+sudo apt install -y curl gnupg 
 
 # Install Node.js (LTS version) using NodeSource
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# Import the MongoDB public GPG key
-curl -fsSL https://pgp.mongodb.com/server-6.0.asc | \
-  gpg --dearmor -o /usr/share/keyrings/mongodb-server-6.0.gpg
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+   --dearmor
 
-# Create the MongoDB source list file
-echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/6.0 multiverse" | \
-  sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+
+
 
 # Update package index
 sudo apt update

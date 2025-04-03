@@ -37,7 +37,7 @@ function authenticateToken(req, res, next) {
     //console.log(token);
 
     if (!token) {
-        return res.status(201).json({ message: 'No token. Please log in.' }); // Send error response if no token is found
+        return res.redirect("http://localhost:5173/"); // Send error response if no token is found
     }
 
     try {
@@ -55,7 +55,7 @@ function authenticateToken(req, res, next) {
 }
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/mydatabase')
+mongoose.connect('mongodb+srv://adam2004buchan:rr2diaSKWrZh4z0N@cluster0.zibsovv.mongodb.net/mydatabase')
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('Failed to connect to MongoDB', err));
 
@@ -136,6 +136,7 @@ app.post('/login', async (req, res) => {
         }
 
         // Generate JWT token
+        console.log(process.env.JWT_SECRET);
         const token = jwt.sign(
             { id: user._id, email: user.email, username: user.username, anonymous: user.anonymous, author_or_reader: user.author_or_reader },
             process.env.JWT_SECRET, // Use your secret key here
@@ -494,6 +495,7 @@ app.post('/update/:id', async (req, res) => {
 );
 
 app.post('/auth', authenticateToken, async (req, res) => {
+    console.log("Auth request received"); // Log the request for debugging
     const user = req.user; // Get user information from the token
 
     if (!user) {

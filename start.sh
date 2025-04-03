@@ -33,12 +33,11 @@ EOF
 # Install dependencies
 npm ci
 
-# Run frontend and backend together
-npm run dev:all
-
-sleep 5
 # Open the frontend URL in the default web browser
 
 URL="http://localhost:5173/"
 
 xdg-open "$URL"
+
+# Run frontend and backend together
+npm run dev:all

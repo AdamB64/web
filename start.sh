@@ -8,7 +8,7 @@ sudo apt install -y curl gnupg
 
 # Install Node.js (LTS version) using NodeSource
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-sudo apt install -y nodejs
+sudo apt install -y nodejs npm
 
 
 # Install Git

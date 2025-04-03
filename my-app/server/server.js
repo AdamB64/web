@@ -37,7 +37,7 @@ function authenticateToken(req, res, next) {
     //console.log(token);
 
     if (!token) {
-        return res.redirect("http://localhost:5173/"); // Send error response if no token is found
+        return res.status(201).json({ message: 'No token. Please log in.' }); // Send error response if no token is found
     }
 
     try {
@@ -495,7 +495,6 @@ app.post('/update/:id', async (req, res) => {
 );
 
 app.post('/auth', authenticateToken, async (req, res) => {
-    console.log("Auth request received"); // Log the request for debugging
     const user = req.user; // Get user information from the token
 
     if (!user) {

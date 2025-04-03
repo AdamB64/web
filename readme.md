@@ -26,7 +26,6 @@ Use the one-step setup script to install everything and start the app.
 - Internet connection
 
 ### 1. Run Setup Script
-<details>
 ```bash
 #!/bin/bash
 
@@ -71,7 +70,7 @@ xdg-open "$URL"
 
 # Run frontend and backend together
 npm run dev:all
-```</details>
+```
 
 # ℹ️ This script will:
 

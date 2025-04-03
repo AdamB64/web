@@ -292,7 +292,7 @@ export default function User() {
                 position="top-right"
                 autoClose={2000}
                 hideProgressBar={false}
-                newestOnTop={false}
+                newestOnTop={true}
                 closeOnClick
                 pauseOnFocusLoss
                 draggable

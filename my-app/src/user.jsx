@@ -264,7 +264,7 @@ export default function User() {
                 )}
             </div>
             {stories.length > 0 && (
-                <div style={{ marginTop: "2rem", backgroundColor: "#000000", padding: "1rem", borderRadius: "8px", textAlign: "center" }}>
+                <div style={{ marginTop: "2rem", padding: "1rem", borderRadius: "8px", textAlign: "center" }}>
                     <h3 style={{ color: "#2c3e50" }}>Your Stories</h3>
                     {stories.map((story, index) => (
                         <li key={index} style={{ marginBottom: "1rem" }}>

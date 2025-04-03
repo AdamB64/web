@@ -37,7 +37,7 @@ function StoryPage() {
     if (!story) return <div>Loading...</div>;
 
     return (
-        <div style={{ padding: '1rem', alignItems: 'center', textAlign: 'center', color: 'white' }}>
+        <div style={{ padding: '1rem', alignItems: 'center', textAlign: 'center', }}>
             <h2>{story.title}</h2>
             <h3>Average stars: {story.Stars}</h3>
             <p><strong>Author ID:</strong> {story.AuthorID}</p>

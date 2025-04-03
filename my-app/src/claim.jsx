@@ -44,7 +44,7 @@ export default function ClaimStory() {
             setShowStoryEditor(true);
         } catch (error) {
             console.error('Error claiming story:', error);
-            toast.success('Invalid story ID or failed to claim story.');
+            toast.error('Invalid story ID or failed to claim story.');
         }
     };
 

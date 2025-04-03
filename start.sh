@@ -30,5 +30,9 @@ EOF
 # Install dependencies
 npm ci
 
+URL="http://localhost:5173/"
+
+xdg-open "$URL"
+
 # Run frontend and backend together
 npm run dev:all

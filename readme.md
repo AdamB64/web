@@ -25,7 +25,7 @@ Use the one-step setup script to install everything and start the app.
 - Bash shell
 - Internet connection
 
-### 1. Run Setup Script
+### 1. Run Setup Script (i`ve had to add my username and github token to the clone like so https://username:Token@github/token)
 ```bash
 #!/bin/bash
 

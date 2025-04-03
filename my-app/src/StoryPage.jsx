@@ -138,6 +138,7 @@ function StoryPage() {
                     <button
                         type="submit"
                         style={{
+                            color: 'white',
                             backgroundColor: '#222',
                             padding: '0.7rem',
                             border: 'none',

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const genresList = [
     'Action', 'Adventure', 'Comedy', 'Drama',
@@ -42,18 +44,18 @@ export default function ClaimStory() {
             setShowStoryEditor(true);
         } catch (error) {
             console.error('Error claiming story:', error);
-            alert('Invalid story ID or failed to claim story.');
+            toast.success('Invalid story ID or failed to claim story.');
         }
     };
 
     function Update(storyId) {
         if (title.length > 50) {
-            alert('Title must be under 50 characters.');
+            toast.error('Title must be under 50 characters.');
             return;
         }
 
         if (wordCount(story) > 500) {
-            alert('Story must be under 500 words.');
+            toast.error('Story must be under 500 words.');
             return;
         }
 
@@ -63,14 +65,14 @@ export default function ClaimStory() {
             genres: selectedGenres
         };
 
-        console.log('Form submitted:', formData);
+        //console.log('Form submitted:', formData);
 
         axios.post(`http://localhost:8080/update/${storyId}`, formData, {
             withCredentials: true,
         })
             .then(response => {
                 console.log('Response:', response.data);
-                alert('Story updated successfully!');
+                toast.success('Story updated successfully!');
                 setTitle('');
                 setStory('');
                 setSelectedGenres([]);
@@ -78,7 +80,7 @@ export default function ClaimStory() {
             })
             .catch(error => {
                 console.error('Error updating story:', error);
-                alert('Failed to update story.');
+                toast.error('Failed to update story.');
             });
     }
 
@@ -163,6 +165,17 @@ export default function ClaimStory() {
                     </button>
                 </div>
             )}
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }

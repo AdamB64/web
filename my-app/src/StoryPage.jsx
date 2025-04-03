@@ -86,15 +86,14 @@ function StoryPage() {
                 <p style={{ color: '#aaa' }}>No reviews yet.</p>
             )}
 
-            <div style={{ alignItems: 'center', textAlign: 'center', color: 'white' }}>
-                <h3 style={{ marginTop: '3rem', color: 'white' }}>Leave a Review</h3>
+            <div style={{ alignItems: 'center', textAlign: 'center' }}>
+                <h3 style={{ marginTop: '3rem' }}>Leave a Review</h3>
                 <form
                     onSubmit={handleReviewSubmit}
                     style={{
                         gap: '0.8rem',
                         maxWidth: '400px',
                         width: '100%',
-                        color: 'white',
                     }}
                 >
                     <label>
@@ -111,7 +110,6 @@ function StoryPage() {
                                 padding: '0.5rem',
                                 marginTop: '0.3rem',
                                 backgroundColor: '#333',
-                                color: 'white',
                                 border: '1px solid #555',
                                 borderRadius: '4px',
                             }}
@@ -130,7 +128,6 @@ function StoryPage() {
                                 padding: '0.5rem',
                                 marginTop: '0.3rem',
                                 backgroundColor: '#333',
-                                color: 'white',
                                 border: '1px solid #555',
                                 borderRadius: '4px',
                                 resize: 'vertical',
@@ -142,7 +139,6 @@ function StoryPage() {
                         type="submit"
                         style={{
                             backgroundColor: '#222',
-                            color: 'white',
                             padding: '0.7rem',
                             border: 'none',
                             borderRadius: '6px',

@@ -136,7 +136,6 @@ app.post('/login', async (req, res) => {
         }
 
         // Generate JWT token
-        console.log(process.env.JWT_SECRET);
         const token = jwt.sign(
             { id: user._id, email: user.email, username: user.username, anonymous: user.anonymous, author_or_reader: user.author_or_reader },
             process.env.JWT_SECRET, // Use your secret key here

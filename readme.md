@@ -4,6 +4,10 @@ This project is a **MERN stack** (MongoDB, Express, React, Node.js) fullstack we
 
 ---
 
+# Set up users:
+    There is an user set up already called adam and the password hello,
+    and a guest story that can be claimed to edit under the id "67edacfbbbec3164cef5e899"
+
 ## ⚙️ Tech Stack
 
 - **Frontend**: React + Vite

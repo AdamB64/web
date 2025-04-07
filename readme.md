@@ -47,7 +47,7 @@ sudo apt install -y git
 git clone https://github.com/AdamB64/web.git
 
 # Go into project backend folder
-cd cm4025-coursework-AdamB64/my-app
+cd web/my-app
 
 secret=$(node -e "console.log(require('crypto').randomBytes(64).toString('hex'))")
 

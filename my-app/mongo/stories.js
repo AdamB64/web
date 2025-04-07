@@ -18,8 +18,8 @@ const storiesSchema = new mongoose.Schema({
     Anomymous: { type: Boolean, default: false },
     Author: { type: String },
     Private: { type: Boolean, default: false },
+    CreatedAt: { type: Date, default: Date.now }
 },
-    { timestamps: true } // Automatically add createdAt and updatedAt fields
 );
 
 // Create Stories Model

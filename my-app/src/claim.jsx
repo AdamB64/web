@@ -35,6 +35,11 @@ export default function ClaimStory() {
             const response = await axios.post('http://localhost:8080/claim', { id: storyId },
                 { withCredentials: true }
             );
+            //console.log('Response:', response.data);
+            if (response.status === 203) {
+                toast.error('Must be guest to claim this story.');
+                return;
+            }
 
             const { title, content, genres } = response.data;
 

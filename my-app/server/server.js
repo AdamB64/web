@@ -72,7 +72,7 @@ app.post('/logged-in', authenticateToken, async (req, res) => {
 });
 
 app.post('/home', async (req, res) => {
-    const newestStory = await Stories.findOne({ Private: { $ne: true } }).sort({ createdAt: -1 });
+    const newestStory = await Stories.findOne({ Private: { $ne: true } }).sort({ CreatedAt: -1 });
 
     return res.status(200).json({ message: 'Home page data', newestStory });
 });
@@ -446,12 +446,18 @@ app.post('/claim', async (req, res) => {
         if (!story) {
             return res.status(404).json({ message: 'Story not found' });
         }
-        if (!story.AuthorID && story.Author === "Guest") {
-            // Return the story data as JSON
-            return res.status(200).json(story);
-
-        }
+        console.log(story);
         const Token = req.cookies.user; // Get token from cookies
+        console.log("Token");
+        if (!story.AuthorID && story.Author === "Guest") {
+            if (Token) {
+                return res.status(203).json({ message: 'arent guest user' });
+            } else {
+                // Return the story data as JSON
+                return res.status(200).json(story);
+            }
+        }
+
         const user = jwt.verify(Token, process.env.JWT_SECRET); // Verify token
         if (story.AuthorID !== user.id) {
             return res.status(403).json({ message: 'You are not authorized to claim this story' });

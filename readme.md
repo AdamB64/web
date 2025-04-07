@@ -25,7 +25,7 @@ Use the one-step setup script to install everything and start the app.
 - Bash shell
 - Internet connection
 
-### 1. Run Setup Script (i`ve had to add my username and github token to the clone, like so https://username:Token@github/repo)
+### 1. Run Setup Script 
 ```bash
 #!/bin/bash
 
@@ -44,7 +44,7 @@ sudo apt install -y nodejs npm
 sudo apt install -y git
 
 # Clone project
-git clone https://github.com/RobertGordonUniversity/cm4025-coursework-AdamB64.git
+git clone https://github.com/AdamB64/web.git
 
 # Go into project backend folder
 cd cm4025-coursework-AdamB64/my-app

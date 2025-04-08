@@ -38,6 +38,7 @@ function Home() {
             <p><strong>User:</strong> {story.Author}</p>
           ) : (
             <>
+              <p><strong>Story ID:</strong> {story._id}</p>
               <p><strong>Author ID:</strong> {story.Anonymous ? 'anonymous' : story.AuthorID}</p>
               {!story.Anonymous && (
                 <p><strong>Username:</strong> {story.Author}</p>

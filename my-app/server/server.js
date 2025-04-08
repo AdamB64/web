@@ -55,7 +55,7 @@ function authenticateToken(req, res, next) {
 }
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://adam2004buchan:rr2diaSKWrZh4z0N@cluster0.zibsovv.mongodb.net/mydatabase')
+mongoose.connect(process.env.MONGO)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('Failed to connect to MongoDB', err));
 

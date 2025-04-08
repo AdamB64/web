@@ -77,7 +77,7 @@ xdg-open "$URL"
 npm run dev:all
 ```
 
-# run this for  firewall but i will have no preloaded info
+### run this for  firewall but it will have no preloaded info assuming that mongo is already pre installed
 ```bash
 #!/bin/bash
 

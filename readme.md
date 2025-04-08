@@ -29,7 +29,7 @@ Use the one-step setup script to install everything and start the app.
 - Bash shell
 - Internet connection
 
-### 1. Run Setup Script 
+### 1. Run Setup Script for non-firewall
 ```bash
 #!/bin/bash
 
@@ -58,6 +58,55 @@ secret=$(node -e "console.log(require('crypto').randomBytes(64).toString('hex'))
 
 # Create .env file with env variables
 cat <<EOF > .env
+MONGO="mongodb+srv://adam2004buchan:rr2diaSKWrZh4z0N@cluster0.zibsovv.mongodb.net/mydatabase"
+NODE_ENV="development"
+JWT_SECRET="$secret"
+EOF
+
+
+# Install dependencies
+npm ci
+
+# Open the frontend URL in the default web browser
+
+URL="http://localhost:5173/"
+
+xdg-open "$URL"
+
+# Run frontend and backend together
+npm run dev:all
+```
+
+# run this for  firewall but i will have no preloaded info
+```bash
+#!/bin/bash
+
+# Update package index
+sudo apt update
+
+# Install curl
+sudo apt install -y curl gnupg 
+
+# Install Node.js (LTS version) using NodeSource
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs npm
+
+
+# Install Git
+sudo apt install -y git
+
+# Clone project
+git clone https://github.com/AdamB64/web.git
+
+# Go into project backend folder
+cd web/my-app
+
+secret=$(node -e "console.log(require('crypto').randomBytes(64).toString('hex'))")
+
+
+# Create .env file with env variables
+cat <<EOF > .env
+MONGO="localhost:27017/mydatabase"
 NODE_ENV="development"
 JWT_SECRET="$secret"
 EOF

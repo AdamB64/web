@@ -106,7 +106,7 @@ secret=$(node -e "console.log(require('crypto').randomBytes(64).toString('hex'))
 
 # Create .env file with env variables
 cat <<EOF > .env
-MONGO="localhost:27017/mydatabase"
+MONGO="mongodb://localhost:27017/mydatabase"
 NODE_ENV="development"
 JWT_SECRET="$secret"
 EOF

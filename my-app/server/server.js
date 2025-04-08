@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken'; // Import jsonwebtoken for token generation
 import dotenv from 'dotenv';
 
 const app = express();
-const PORT = 8080;
+const PORT = 8000;
 const salt = 15; // Hashing rounds for bcryptjs
 dotenv.config(); // Load environment variables from .env file
 

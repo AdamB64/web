@@ -74,7 +74,7 @@ function Home() {
                       }}
                     >
                       <p style={{ marginBottom: '0.5rem' }}>
-                        <strong>User ID:</strong> {review.UserID}
+                        <strong>User:</strong> {review.User}
                       </p>
                       <p style={{ marginBottom: '0.5rem' }}>
                         <strong>Stars:</strong> {'⭐'.repeat(review.Stars)}

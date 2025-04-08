@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: process.env.PORT || 5173,
-    host: true
+    host: true,
+    allowedHosts: ['web-production-a64a.up.railway.app'],
   }
 })

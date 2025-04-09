@@ -6,28 +6,61 @@ import Signup from './signup.jsx'
 import Login from './login.jsx'
 import Write from './write.jsx'
 import StoryPage from './StoryPage.jsx'
+import Admin from './admin.jsx'
 import Claim from './claim.jsx'
 import Auth from './auth.jsx'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function Home() {
+  const [reviewText, setReviewText] = useState('');
+  const [stars, setStars] = useState(0);
   const [story, setStory] = useState(null)
+  const [storyId, setStoryId] = useState(null)
 
   useEffect(() => {
-    axios.post('http://localhost:8080/home', {})
+    axios.post('https://localhost:8080/home', {})
       .then(response => {
         setStory(response.data.newestStory)
+        setStoryId(response.data.newestStory._id)
       })
       .catch(error => {
         console.error('Error:', error)
       })
   }, [])
 
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const reviewData = {
+        Stars: stars,
+        ReviewText: reviewText
+      };
+      const response = await axios.post(`https://localhost:8080/story/${storyId}/review`, reviewData, {
+        withCredentials: true,
+      });
+      if (response.status === 201) {
+        toast.error('Must be logged in to leave a review!');
+      } else {
+        // Refresh the story to show new review
+        setReviewText('');
+        setStars(0);
+        window.location.reload();
+
+      }
+    } catch (err) {
+      console.error('Error submitting review:', err);
+    }
+  };
+
   return (
     <div>
       <h2>This is my library where anyone can make a story</h2>
-      <h3>Go to the start page and find all the stories made by other people on this website</h3>
+      <h3>Go to the story ranking page and find all the stories made by other people on this website</h3>
       <p>Or sign-up/login to an account and create your own stories, where you can publish them anonymously or with your account credited for the story</p>
       <h2>Newest Story</h2>
       {!story && <p>No new Stories</p>}
@@ -90,9 +123,85 @@ function Home() {
             </div>
           )}
 
+          <div style={{ alignItems: 'center', textAlign: 'center' }}>
+            <h3 style={{ marginTop: '3rem' }}>Leave a Review(must be logged in)</h3>
+            <form
+              onSubmit={handleReviewSubmit}
+              style={{
+                gap: '0.8rem',
+                maxWidth: '400px',
+                width: '100%',
+              }}
+            >
+              <label>
+                Stars (0–5):
+                <input
+                  type="number"
+                  value={stars}
+                  onChange={(e) => setStars(parseInt(e.target.value))}
+                  min="0"
+                  max="5"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem',
+                    marginTop: '0.3rem',
+                    backgroundColor: '#333',
+                    border: '1px solid #555',
+                    borderRadius: '4px',
+                  }}
+                />
+              </label>
 
+              <label>
+                Review:
+                <textarea
+                  value={reviewText}
+                  onChange={(e) => setReviewText(e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    height: '100px',
+                    padding: '0.5rem',
+                    marginTop: '0.3rem',
+                    backgroundColor: '#333',
+                    border: '1px solid #555',
+                    borderRadius: '4px',
+                    resize: 'vertical',
+                  }}
+                />
+              </label>
+
+              <button
+                type="submit"
+                style={{
+                  color: 'white',
+                  backgroundColor: '#222',
+                  padding: '0.7rem',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                }}
+              >
+                Submit Review
+              </button>
+            </form>
+          </div>
         </div>
       )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   )
 }
@@ -156,6 +265,11 @@ export default function App() {
                 </Link>
               </li>
               <li>
+                <Link to="/admin" style={{ color: 'white', textDecoration: 'none' }}>
+                  Admin
+                </Link>
+              </li>
+              <li>
                 <Link to="/write" style={{ color: 'white', textDecoration: 'none' }}>
                   Write
                 </Link>
@@ -191,6 +305,7 @@ export default function App() {
           <Route path="/story/:id" element={<StoryPage />} />
           <Route path="/claim" element={<Claim />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </main>

@@ -46,7 +46,7 @@ export default function Write() {
 
         console.log('Form submitted:', formData);
 
-        axios.post('http://localhost:8080/write', formData, {
+        axios.post('https://localhost:8080/write', formData, {
             withCredentials: true,
         })
             .then(response => {

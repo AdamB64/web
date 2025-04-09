@@ -520,7 +520,71 @@ app.post('/auth', authenticateToken, async (req, res) => {
     res.status(200).json({ user, averageStars });
 });
 
+app.post('/get_users', authenticateToken, async (req, res) => {
+    try {
+        const users = await User.find({}); // Fetch all users from the database
+        console.log(users); // Log the users for debugging
+        res.status(200).json(users); // Return the users as JSON
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+app.post('/delete_user/:id', authenticateToken, async (req, res) => {
+    const userId = req.params.id; // Get user ID from URL parameters
+    console.log("User ID:", userId); // Log the user ID for debugging
+
+    if (userId === req.user.id) {
+        return res.status(202).json({ message: 'You cannot delete yourself' });
+    }
+
+    try {
+        // Find and delete the user by ID
+        const deletedUser = await User.findByIdAndDelete(userId);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Delete all stories associated with the user
+        await Stories.deleteMany({ AuthorID: userId });
+
+        res.status(200).json({ message: 'User and associated stories deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/access', authenticateToken, async (req, res) => {
+    console.log("Access request received:");
+    const { password } = req.body; // Get password from request body
+    console.log("Password received:", password); // Log the received password for debugging
+
+    try {
+        // Find the admin password in the database
+        const pass = await Pass.findOne({});
+        console.log("Admin password found:", pass); // Log the found password for debugging
+        if (!pass) {
+            return res.status(404).json({ message: 'Admin password not found' });
+        }
+
+        // Compare the provided password with the hashed password in the database
+        const isMatch = await bcryptjs.compare(password, pass.password);
+        console.log("Password match result:", isMatch); // Log the password match result for debugging
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid password' });
+        }
+
+        // Password is correct, grant access
+        res.status(200).json({ message: 'Access granted' });
+    } catch (error) {
+        console.error('Error checking password:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

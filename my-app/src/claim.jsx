@@ -32,7 +32,7 @@ export default function ClaimStory() {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8080/claim', { id: storyId },
+            const response = await axios.post('https://localhost:8080/claim', { id: storyId },
                 { withCredentials: true }
             );
             //console.log('Response:', response.data);
@@ -72,7 +72,7 @@ export default function ClaimStory() {
 
         //console.log('Form submitted:', formData);
 
-        axios.post(`http://localhost:8080/update/${storyId}`, formData, {
+        axios.post(`https://localhost:8080/update/${storyId}`, formData, {
             withCredentials: true,
         })
             .then(response => {

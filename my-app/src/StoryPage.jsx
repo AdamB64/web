@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function StoryPage() {
     const { id } = useParams();
@@ -9,7 +11,7 @@ function StoryPage() {
     const [stars, setStars] = useState(0);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/story/${id}`)
+        axios.get(`https://localhost:8080/story/${id}`)
             .then(response => setStory(response.data))
             .catch(error => console.error('Error fetching story:', error));
     }, [id]);
@@ -21,14 +23,18 @@ function StoryPage() {
                 Stars: stars,
                 ReviewText: reviewText
             };
-            await axios.post(`http://localhost:8080/story/${id}/review`, reviewData, {
+            const responce = await axios.post(`https://localhost:8080/story/${id}/review`, reviewData, {
                 withCredentials: true,
             });
-            // Refresh the story to show new review
-            const updated = await axios.get(`http://localhost:8080/story/${id}`);
-            setStory(updated.data);
-            setReviewText('');
-            setStars(0);
+            if (responce.status === 201) {
+                toast.success('must be logged in to leave a review!');
+            } else {
+                // Refresh the story to show new review
+                const updated = await axios.get(`https://localhost:8080/story/${id}`);
+                setStory(updated.data);
+                setReviewText('');
+                setStars(0);
+            }
         } catch (err) {
             console.error('Error submitting review:', err);
         }
@@ -87,7 +93,7 @@ function StoryPage() {
             )}
 
             <div style={{ alignItems: 'center', textAlign: 'center' }}>
-                <h3 style={{ marginTop: '3rem' }}>Leave a Review</h3>
+                <h3 style={{ marginTop: '3rem' }}>Leave a Review(must be logged in)</h3>
                 <form
                     onSubmit={handleReviewSubmit}
                     style={{
@@ -152,6 +158,17 @@ function StoryPage() {
                 </form>
             </div>
 
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }

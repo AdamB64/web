@@ -22,7 +22,7 @@ function Home() {
   const [storyId, setStoryId] = useState(null)
 
   useEffect(() => {
-    axios.post('https://localhost:8080/home', {})
+    axios.post('http://localhost:8080/home', {})
       .then(response => {
         setStory(response.data.newestStory)
         setStoryId(response.data.newestStory._id)
@@ -40,7 +40,7 @@ function Home() {
         Stars: stars,
         ReviewText: reviewText
       };
-      const response = await axios.post(`https://localhost:8080/story/${storyId}/review`, reviewData, {
+      const response = await axios.post(`http://localhost:8080/story/${storyId}/review`, reviewData, {
         withCredentials: true,
       });
       if (response.status === 201) {

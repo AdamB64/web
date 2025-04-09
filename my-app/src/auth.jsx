@@ -5,7 +5,7 @@ export default function Start() {
     const [star, setStar] = useState(null);
 
     useEffect(() => {
-        axios.post("https://localhost:8080/auth", {}, { withCredentials: true })
+        axios.post("http://localhost:8080/auth", {}, { withCredentials: true })
             .then(response => {
                 if (response.status === 201) {
                     console.log("User is not logged in, redirecting to home page.");

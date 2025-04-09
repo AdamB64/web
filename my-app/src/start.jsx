@@ -5,7 +5,7 @@ export default function Start() {
     const [stories, setStories] = useState(null);
 
     useEffect(() => {
-        axios.post("https://localhost:8080/get-start")
+        axios.post("http://localhost:8080/get-start")
             .then(response => {
                 const sorted = response.data.stories.sort((a, b) => (b.Stars || 0) - (a.Stars || 0));
                 setStories(sorted);

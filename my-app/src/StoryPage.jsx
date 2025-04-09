@@ -11,7 +11,7 @@ function StoryPage() {
     const [stars, setStars] = useState(0);
 
     useEffect(() => {
-        axios.get(`https://localhost:8080/story/${id}`)
+        axios.get(`http://localhost:8080/story/${id}`)
             .then(response => setStory(response.data))
             .catch(error => console.error('Error fetching story:', error));
     }, [id]);
@@ -23,14 +23,14 @@ function StoryPage() {
                 Stars: stars,
                 ReviewText: reviewText
             };
-            const responce = await axios.post(`https://localhost:8080/story/${id}/review`, reviewData, {
+            const responce = await axios.post(`http://localhost:8080/story/${id}/review`, reviewData, {
                 withCredentials: true,
             });
             if (responce.status === 201) {
                 toast.success('must be logged in to leave a review!');
             } else {
                 // Refresh the story to show new review
-                const updated = await axios.get(`https://localhost:8080/story/${id}`);
+                const updated = await axios.get(`http://localhost:8080/story/${id}`);
                 setStory(updated.data);
                 setReviewText('');
                 setStars(0);

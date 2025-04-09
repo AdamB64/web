@@ -11,7 +11,7 @@ export default function User() {
     const [newRole, setNewRole] = useState("");
 
     useEffect(() => {
-        axios.post("https://localhost:8080/logged-in", {
+        axios.post("http://localhost:8080/logged-in", {
             status: "yes"
         }, {
             withCredentials: true,
@@ -62,7 +62,7 @@ export default function User() {
         const confirmChange = window.confirm(`Are you sure you want to change your role to "${newRole}"?`);
         if (!confirmChange) return;
 
-        axios.post("https://localhost:8080/change_auth", {
+        axios.post("http://localhost:8080/change_auth", {
             newRole: newRole
         }, {
             withCredentials: true,
@@ -96,7 +96,7 @@ export default function User() {
             toast.error("New password is required.");
             return;
         }
-        axios.post("https://localhost:8080/change_password", {
+        axios.post("http://localhost:8080/change_password", {
             Password: newPassword,
             oldPassword: oldPassword
         }, {
@@ -119,7 +119,7 @@ export default function User() {
         const confirmChange = window.confirm("Are you sure you want to change your anonymity status?");
         if (!confirmChange) return;
 
-        axios.post("https://localhost:8080/changeAn", {
+        axios.post("http://localhost:8080/changeAn", {
             anonymous: !user.anonymous
         }, {
             withCredentials: true,
@@ -145,7 +145,7 @@ export default function User() {
         const confirmChange = window.confirm("Are you sure you want to change the visibility of this story?");
         if (!confirmChange) return;
 
-        axios.post("https://localhost:8080/changeVis", {
+        axios.post("http://localhost:8080/changeVis", {
             storyId: storyId
         }, {
             withCredentials: true,
@@ -168,7 +168,7 @@ export default function User() {
         const confirmDelete = window.confirm("Are you sure you want to delete this story? This action cannot be undone.");
         if (!confirmDelete) return;
 
-        axios.post("https://localhost:8080/delete", {
+        axios.post("http://localhost:8080/delete", {
             storyId: storyId
         }, {
             withCredentials: true,
@@ -191,7 +191,7 @@ export default function User() {
         const confirmLogout = window.confirm("Are you sure you want to log out?");
         if (!confirmLogout) return;
 
-        axios.post("https://localhost:8080/logout", {}, {
+        axios.post("http://localhost:8080/logout", {}, {
             withCredentials: true,
         })
             .then(response => {

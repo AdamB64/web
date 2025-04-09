@@ -11,7 +11,7 @@ const AdminPage = () => {
     const handleAccessSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://localhost:8080/access', { password }, { withCredentials: true });
+            const response = await axios.post('http://localhost:8080/access', { password }, { withCredentials: true });
 
 
             if (response.status === 200) {
@@ -33,7 +33,7 @@ const AdminPage = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.post('https://localhost:8080/get_users', {}, {
+            const response = await axios.post('http://localhost:8080/get_users', {}, {
                 withCredentials: true,
             });
             console.log('Fetched users:', response.data);
@@ -46,7 +46,7 @@ const AdminPage = () => {
 
     const deleteUser = async (userId) => {
         try {
-            const response = await axios.post(`https://localhost:8080/delete_user/${userId}`, {}, {
+            const response = await axios.post(`http://localhost:8080/delete_user/${userId}`, {}, {
                 withCredentials: true,
             });
             console.log('Delete user response:', response.data);
